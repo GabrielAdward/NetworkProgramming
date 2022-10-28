@@ -125,7 +125,10 @@ for i in animal:
 #parameter and prints the string parrot n times!
 
 def hello( n ):
-	input(n)
+    #for _ in range(n):
+		#print(n *"parrot")
 
+#2. What is f if one writes f = hello?
+	f = hello 
 
 
