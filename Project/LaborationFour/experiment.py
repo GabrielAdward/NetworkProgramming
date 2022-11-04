@@ -15,15 +15,14 @@ b = myTest()
 
 
 
-#fråga johannes varför man får bort 0an genom att ge bägge a och b 1
 
-def fibonacci_generator() :
+def fibonacci() :
         a , b = 1 , 1
         while True:
             yield a
             a , b = b , a + b
 
-fib = fibonacci_generator() 
+fib = fibonacci() 
 
 for i in fib :
         if i > 1000000 :
