@@ -10,10 +10,10 @@ class CardDeck:
         random.shuffle(self.cardDeck)
 
     def getCard(self):
-        topCard = len(self.cardDeck)-1
-        drawnCard = self.cardDeck[topCard]
+        topCardOfTheDeck = len(self.cardDeck)-1
+        drawnCardFromDeck = self.cardDeck[topCardOfTheDeck]
         self.cardDeck.pop()
-        return drawnCard
+        return drawnCardFromDeck
 
     def size(self):
         return len(self.cardDeck)
