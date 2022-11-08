@@ -1,44 +1,50 @@
 import socket
 
-def server_program():
-    #create a socket 
-    sockS = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-    #we want to be server so bind to IP address and port number 
-    sockS.bind(('127.0.0.1', 60003))
-    #amount of client connection request we can handle simultaneously
-    sockS.listen(1)
+def serversideGetPlaySocket():
+    socketServer = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+    socketServer.bind(("127.0.0.1", 60003))
+    socketServer.listen(1)
+    (socketClient, addr) = socketServer.accept()
+    print(socketClient)
+    print("connection from {}".format(addr))
+    return socketClient
+
+def clientsideGetPlayerSocket(host):
+    socketClient = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+    socketClient.connect((host, 60003))
+    return socketClient
+
+def checkTheWinner():
+    clientMove = input("Make Move:")
+    ServerMove = input("Make Move")
+    clientCheck  = clientMove
+    serverCheck = ServerMove
     
-    while True:
-        print("\nlistening...\n")
-        (sockC, addr) = sockS.accept()
-        print("connection from {}".format(addr))
-        while True:
-            data = sockC.recv(1024)
-            if not data:
-                break
-            print ("received:", data.decode("ascii"))
-            answer = "thanks for the data!"
-            sockC.sendall (bytearray (answer, "ascii"))
-            print ("answered:", answer)
-        sockC.close()
-        print('client {} disconnected'. format (addr) )
+    if(clientCheck == "R" and serverCheck == "R"):
+        sock.sendall(bytearray(clientCheck, "ascii"))
+        print("Sent:" , clientCheck)
         
-def client_program():
-    #create a socket 
-   sock = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-   
-   #Attempt to connect to a certain server
-   sock.bind(('127.0.0.1', 60003)) 
-   
-   message = input("Type your message:")
-   
-   #send some data to the server 
-   sock.sendall(bytearray(message, "ascii"))
-   print("sent: ", message)
-   
-   #expect data: wait until some data is received from server
-   data = sock.recv(1024)
-   print("received:" , data.decode("ascii"))
-   
-   #close my socket
-   sock.close()
+        serverCheck = sock.recv(1024)
+        print("received" , serverCheck.decode("ascii"))
+        
+        sock.sendall(bytearray(serverCheck, "ascii"))
+        print("Sent:" , serverCheck)
+        
+        clientCheck = sock.recv(1024)
+        print("received" , clientCheck.decode("ascii"))
+
+
+ans = "?"
+while ans not in {"C" , "S"}:
+    ans = input("Do you want ti be server (S) or client (C):: ")
+    if ans=="S":
+        sock = serversideGetPlaySocket()
+    elif ans == "C":
+        host = input("Enter the server's name or IP: ")
+        sock =clientsideGetPlayerSocket(host)
+        
+
+numberOfRounds = 0      
+while numberOfRounds < 5:
+    checkTheWinner()
+    numberOfRounds += 1
