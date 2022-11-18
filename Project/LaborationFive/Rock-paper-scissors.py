@@ -1,5 +1,8 @@
 import socket
 
+wins4win = 3
+
+
 def serversideGetPlaySocket():
     socketServer = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
     socketServer.bind(("127.0.0.1", 60003))
@@ -7,44 +10,50 @@ def serversideGetPlaySocket():
     (socketClient, addr) = socketServer.accept()
     print(socketClient)
     print("connection from {}".format(addr))
-    return socketClient
+    gameLoop(socketClient)
+    socketClient.close()
+    socketServer.close()
 
 def clientsideGetPlayerSocket(host):
     socketClient = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
     socketClient.connect((host, 60003))
-    return socketClient
+    gameLoop(socketClient)
+    socketClient.close()
 
-def checkTheWinner():
-    clientMove = input("Make Move:")
-    ServerMove = input("Make Move")
-    clientCheck  = clientMove
-    serverCheck = ServerMove
+
+
+def checkRule(myMove, enemyMove):
+    enemyScore = 0
+    myScore = 0
+    if (myMove == "R" and enemyMove == "S") or (myMove == "P" and enemyMove == "R") or (myMove == "S" and enemyMove == "P"):
+        myScore += 1
+    if (enemyMove == "R" and myMove == "S") or (enemyMove == "P" and enemyMove == "R") or (enemyMove == "S" and myMove == "P"):
+        enemyScore += 1
+
     
-    if(clientCheck == "R" and serverCheck == "R"):
-        sock.sendall(bytearray(clientCheck, "ascii"))
-        print("Sent:" , clientCheck)
+def onStart():
+    ans = "?"
+    while ans not in {"C" , "S"}:
+        ans = input("Do you want ti be server (S) or client (C):: ")
+        if ans=="S":
+            serversideGetPlaySocket()
+        elif ans == "C":
+            host = input("Enter the server's name or IP: ")
+            clientsideGetPlayerSocket(host)
+            
+
+def gameLoop(socketClient, myScore, enemyScore):
+    numberOfRounds = 0
+    while (myScore < 10 or enemyScore<10) and (numberOfRounds<10):
+        myMove = input("Make Move:")
+        socketClient.sendall(bytearray(myMove, "ascii"))
+        print("Sent:" , myMove)
+        enemyMove = socketClient.recv(1024).decode("ascii")
+        print("received" , enemyMove)
+        checkRule(myMove, enemyMove)
+        print(myMove, enemyMove)
+        numberOfRounds +=1
         
-        serverCheck = sock.recv(1024)
-        print("received" , serverCheck.decode("ascii"))
-        
-        sock.sendall(bytearray(serverCheck, "ascii"))
-        print("Sent:" , serverCheck)
-        
-        clientCheck = sock.recv(1024)
-        print("received" , clientCheck.decode("ascii"))
 
 
-ans = "?"
-while ans not in {"C" , "S"}:
-    ans = input("Do you want ti be server (S) or client (C):: ")
-    if ans=="S":
-        sock = serversideGetPlaySocket()
-    elif ans == "C":
-        host = input("Enter the server's name or IP: ")
-        sock =clientsideGetPlayerSocket(host)
-        
-
-numberOfRounds = 0      
-while numberOfRounds < 5:
-    checkTheWinner()
-    numberOfRounds += 1
+onStart()

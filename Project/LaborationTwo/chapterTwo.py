@@ -11,6 +11,7 @@ def read():
         name = values[2] + " " + values [3]
         points = int(values[4])
         if name in d.keys():
+            #if name 
             d[name] += points
         else:
             d[name] = points
