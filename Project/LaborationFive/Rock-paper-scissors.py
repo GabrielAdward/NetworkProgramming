@@ -1,16 +1,19 @@
 import socket
 
 wins4win = 3
+enemyScore = 0
+myScore = 0
 
 
 def serversideGetPlaySocket():
+    #SKAPAR SOCKET 
     socketServer = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
     socketServer.bind(("127.0.0.1", 60003))
     socketServer.listen(1)
     (socketClient, addr) = socketServer.accept()
-    print(socketClient)
     print("connection from {}".format(addr))
     gameLoop(socketClient)
+    # Close client first then the server
     socketClient.close()
     socketServer.close()
 
@@ -22,9 +25,9 @@ def clientsideGetPlayerSocket(host):
 
 
 
-def checkRule(myMove, enemyMove):
-    enemyScore = 0
-    myScore = 0
+def checkInput(myMove, enemyMove):
+    global myScore
+    global enemyScore
     if (myMove == "R" and enemyMove == "S") or (myMove == "P" and enemyMove == "R") or (myMove == "S" and enemyMove == "P"):
         myScore += 1
     if (enemyMove == "R" and myMove == "S") or (enemyMove == "P" and enemyMove == "R") or (enemyMove == "S" and myMove == "P"):
@@ -40,20 +43,32 @@ def onStart():
         elif ans == "C":
             host = input("Enter the server's name or IP: ")
             clientsideGetPlayerSocket(host)
-            
 
-def gameLoop(socketClient, myScore, enemyScore):
-    numberOfRounds = 0
-    while (myScore < 10 or enemyScore<10) and (numberOfRounds<10):
-        myMove = input("Make Move:")
-        socketClient.sendall(bytearray(myMove, "ascii"))
+def inputValidation():
+    inputValue = ""
+    while inputValue not in {"R" , "S" , "P"}:
+        print("The only valid moves are P, S and R")
+        inputValue = input("Make Move:").upper()
+    return inputValue
+
+
+def gameLoop(socket):
+    global myMove
+    global enemyMove
+    while True:
+        myMove = inputValidation()
+        socket.sendall(bytearray(myMove, "ascii"))
         print("Sent:" , myMove)
-        enemyMove = socketClient.recv(1024).decode("ascii")
+        enemyMove = socket.recv(1024).decode("ascii")
         print("received" , enemyMove)
-        checkRule(myMove, enemyMove)
+        checkInput(myMove, enemyMove)
         print(myMove, enemyMove)
-        numberOfRounds +=1
-        
-
+        print(myScore, enemyScore)
+        if myScore == wins4win: 
+         print("You Won")
+         break;
+        elif enemyScore == wins4win:
+         print("Enemy Won")
+         break;
 
 onStart()
