@@ -1,28 +1,25 @@
 import socket
 
-# Define socket host and port
-SERVER_HOST = '0.0.0.0'
-SERVER_PORT = 8000
-
 # Create socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server_socket.bind((SERVER_HOST, SERVER_PORT))
+server_socket.bind(("127.0.0.1", 8080))
 server_socket.listen(1)
-print('Listening on port %s ...' % SERVER_PORT)
+print('Listening on port %s ...' %8080)
 
-while True:    
-    # Wait for client connections
-    client_connection, client_address = server_socket.accept()
-
+while True:
+    # Wait for client connections    
+    (client_conn, client_adress) = server_socket.accept()
     # Get the client request
-    request = client_connection.recv(1024).decode()
-    print(request)
-
+    request = client_conn.recv(1024).decode("ascii")
     # Send HTTP response
-    response = 'HTTP/1.0 200 OK\n\nHello World'
-    client_connection.sendall(response.encode())
-    client_connection.close()
-
+    response = "HTTP/1.1 200 ok Everything works\n\n<br> Your Browser Sent The Following Request: </br>\n"
+    client_conn.sendall(response.encode())
+    client_conn.sendall(bytearray("\n", "ASCII") )
+    client_conn.sendall (bytearray("<html>\n", "ASCII"))
+    client_conn.sendall (bytearray("<pre>", "ASCII"))
+    client_conn.sendall (request.encode())
+    client_conn.sendall (bytearray("</pre>", "ASCII"))
+    client_conn.sendall (bytearray("</html>\n", "ASCII"))
+    client_conn.close()
 # Close socket
 server_socket.close()

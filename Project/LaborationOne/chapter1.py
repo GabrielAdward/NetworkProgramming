@@ -131,4 +131,5 @@ def hello( n ):
 #2. What is f if one writes f = hello?
 	f = hello 
 
+#tuples
 
