@@ -61,16 +61,34 @@ def repetions():
         #strings that match now still start as early as possible, but are not longer
         #than necessary:
         
-def taskoOne():
+def taskOne():
     mtxt = "jox r.nohre@jth.hj.se, bjox@se, adam@example.com, jox@jox@jox.com."
     #Since we experiment, our rst try could be to nd words that contain @
-    test = re.findall(r"\w+@\w\w", mtxt)
+    test = re.findall(r"(?:^|\s)([\w.]+?@[\w]+\.[\w\.]+[\w])", mtxt)
     print(test)
-
+    
+def finalPreperation():
+    htmltxt = """ bla bla bla
+                <h1> My Rubric </h1>
+                    bla bla bla. """
+    #We want now a regex that nds the rubric's text, that is, the text MyRubric. With
+    re.findall(r"<h1>\s*.*\s*</h1>", htmltxt) 
+    #If we add a capturing group around .*, we only get the text between <h1> and </h1>.
+    re.findall(r"<h1>\s*(.*)\s*</h1>", htmltxt)
+    #This means, the spaces between My Rubric and </h1> also come into
+    #our group. Why is that? Because * is gready! We can avoid the spaces by
+    #making it lazy:
+    task3 = re.findall(r"<h1>\s*(.*?)\s*</h1>", htmltxt)
+    f = open("tabla.html", encoding="utf-8")
+    txt = f.read()
+    tasklast = re.findall(r'<td class="svtTablaTime">\s+(\d+\.\d+)\s+</td>', txt)
+    print("--------------------------------------")
+    print(tasklast[0])
+    print("--------------------------------------")
 testPartA()
 testPrefix()
 otherSpecialCharacters()
 userDefinedSets()
 repetions()
-taskoOne()
-
+taskOne()
+finalPreperation()

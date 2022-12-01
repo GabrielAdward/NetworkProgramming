@@ -1,8 +1,6 @@
-import collections
 import math
 import random 
 import zlib
-import sys
 
 with open(r"C:\Users\gabri\OneDrive\Dokument\GitHub\NetworkProgramming\Project\LaborationNine\exempeltext.txt", "r") as file:
     data = file.read()
@@ -10,15 +8,8 @@ with open(r"C:\Users\gabri\OneDrive\Dokument\GitHub\NetworkProgramming\Project\L
     byteArr = bytearray(data,'UTF-8')
     print(len(byteArr))
     
-
-
-
-def firstHistogram (data):
-    histogram = [0]*256
-    histogram = collections.Counter(data)
-    return histogram
-
-def secondHistogram(bytearray):#data
+    
+def secondHistogram(bytearray):
     histogramTwo=[0]*256
     for char in bytearray :
         histogramTwo[char]+=1
@@ -34,13 +25,7 @@ def makeProb(histogram):
         probHistogram[index] = round(histogram[index]/(totalOccurences),4)
     return probHistogram
 
-def checkProbForHistogram(probHistogram):
-    sum = 0
-    for i in range(len(probHistogram)):
-        sum+=round(probHistogram[i],4)
-    return sum
-
-
+#dividera med 0 ej ok, använd [i] == 0
 def getEntropi(probHistogram):
     sum =0
     for i in range(len(probHistogram)):
@@ -99,9 +84,7 @@ A better entropi indicates a better randomness.
 """
 
   
-a = firstHistogram(data)
 print("CHECK HISTOGRAM")
-print(a)
 print()
 print("HISTOGRAM")
 
@@ -111,9 +94,7 @@ print("PROB HISTOGRAM")
 print()
 prob = makeProb(histo)
 print(prob)
-sum = checkProbForHistogram(prob)
 print("CHECK SUM")
-print(round(sum,2))
 entropy = getEntropi(prob)
 print("ENRTOPY")
 print(entropy)

@@ -53,7 +53,7 @@ class Application(tk.Frame):
         #-------------------------------------------------------------------
         self.groupSend = tk.LabelFrame(bd=0)
         self.groupSend.pack(side="top")
-        #self.textInLbl = tk.Label(self.groupSend, text='message', padx=10)
+        self.textInLbl = tk.Label(self.groupSend, text='message', padx=10)
         self.textInLbl.pack(side="left")
         #
         self.textIn = tk.Entry(self.groupSend, width=38)
@@ -122,7 +122,7 @@ def disconnect():
     if g_bConnected:
         g_sock.close()
         g_bConnected =  False
-
+    g_app.connectButton["text"] = "connect"
     
 # attempt to connect to server    
 def tryToConnect():
@@ -130,17 +130,19 @@ def tryToConnect():
     global g_bConnected
     global g_sock
     
-    input = g_app.ipPort.get()
-    host  = str(input[:9])
-    port = int(input[10:])
+    ip, port = g_app.ipPort.get().split(":")
     g_sock = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
     g_sock.settimeout(0.1)
-    g_sock.connect(("127.0.0.1", port))
-    if g_sock.connect:
+    try:
+        g_sock.connect((ip, int(port)))
         g_bConnected = True
-        g_app.connectButton["Text"] = "Disconnect"
-    else: 
-        print("Could not connect, try again")
+        g_app.connectButton["text"] = "disconnect"
+        printToMessages("connected" + myAddrFormat(g_sock.getpeername()))
+    except socket.error as e:
+        printToMessages("could not" + ip + ":" + port)
+        g_sock.close()
+        g_sock = None
+        g_bConnected = False
     # your code here
     # try to connect to the IP address and port number
     # as indicated by the text field g_app.ipPort
@@ -153,33 +155,31 @@ def sendMessage(master):
      # a call to g_app.textIn.get() delivers the text field's content
     # if a socket.error occurrs, you may want to disconnect, in order
     # to put the program into a defined state
-    try:
         input  = g_app.textIn.get()
-        if not input:
-            print("Connection closed")
-            printToMessages("Connection lost and closed")
-            g_sock.close()
-        else:
-            g_sock.sendall(bytearray,("txt".format(input), "ascii"))
+        if input:
+            g_app.textIn.delete(0, tk.END)
+            try:
+                g_sock.sendall(input.encode("Ascii"))
+            except socket.error as e:
+                printToMessages("No message got send")
+                disconnect()
+       
         
-    except Exception as e:
-        print("Error", str(e))
-        printToMessages(e)
+  
   
 # poll messages
 def pollMessages():
     # reschedule the next polling event
     g_root.after(g_pollFreq, pollMessages)
-    if g_bConnected:
+    while g_sock:
         try:
             g_sock.setblocking(False)
-            data = g_sock.recv(2048)
+            data = g_sock.recv(1024)
             if not data:
-                printToMessages("du väljer själv")
-                disconnect()
-                return
+                break
+            printToMessages(data.decode("Ascii"))
         except:
-            pass
+            break
     # your code here
     # use the recv() function in non-blocking mode
     # catch a socket.error exception, indicating that no data is available
