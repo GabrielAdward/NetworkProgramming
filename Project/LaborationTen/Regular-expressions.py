@@ -32,7 +32,7 @@ def simpson():
             season: {}
             episode: {}
             description: {}
-            """.format(time, season, episode, description))    
+            """.format(time, season, episode, description))
 
 checkEmail()
 simpson()
