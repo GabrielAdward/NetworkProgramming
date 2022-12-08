@@ -6,21 +6,21 @@ def checkEmail():
     #print(test)
     
 def simpson():
-    f = open("tabla.html", encoding="utf-8")
+    f = open(r'C:\Users\gabri\OneDrive\Dokument\GitHub\NetworkProgramming\Project\LaborationTen\tabla.html', "r", encoding="utf-8")
     txt = f.read()
-    collectInformation = re.findall(r'<td class="svtTablaTime">\s+' 
-                            r'(\d+\.\d+)\s+' 
-                            r'</td>'
-                            r'<td class=\"svtJsTablaShowInfo\">\s+'
-                            r'<h4 class=\"svtLink-hover svtTablaHeading\">\s'
-                            r'Simpsons\s+'
-                            r'</h4>\s+'
-                            r'<div class=\"svtJsStopPropagation\">\s+'
-                            r'<div class=\"svtTablaTitleInfo svtHide-Js\">\s+'
-                            r'<div class=\"svtTablaContent-Description\">\s+'
-                            r'<p class=\"svtXMargin-Bottom-10px\">\s+Amerikansk animerad komediserie från [\d-]+\.Säsong (\d+)\. Del [\d+] av (\d+)\.(.+?)\s+' 
-                            r'</p>',txt)
-
+    collectInformation = re.findall(r"<td class=\"svtTablaTime\">\s+"
+                      r"(\d+\.\d+)\s+"
+                      r"</td>\s+"
+                      r"<td class=\"svtJsTablaShowInfo\">\s+"
+                      r"<h4 class=\"svtLink-hover svtTablaHeading\">\s+"
+                      r"Simpsons\s+"
+                      r"</h4>\s+"
+                      r"<div class=\"svtJsStopPropagation\">\s+"
+                      r"<div class=\"svtTablaTitleInfo svtHide-Js\">\s+"
+                      r"<div class=\"svtTablaContent-Description\">\s+"
+                      r"<p class=\"svtXMargin-Bottom-10px\">\s+Amerikansk animerad komediserie från [\d-]+\. Säsong (\d+)\. Del (\d+) av (\d+)\.(.+?)\s+"
+                      r"</p>", txt)
+    
     for x in collectInformation:
         time = x[0]
         season = x[1]
@@ -33,6 +33,7 @@ def simpson():
             episode: {}
             description: {}
             """.format(time, season, episode, description))
+    f.close()
 
-checkEmail()
+
 simpson()
