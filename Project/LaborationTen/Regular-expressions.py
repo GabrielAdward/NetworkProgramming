@@ -3,7 +3,7 @@ import re
 def checkEmail():
     mtxt = "jox r.nohre@jth.hj.se, bjox@se, adam@example.com, jox@jox@jox.com."
     test = re.findall(r"(?:^|\s)([\w.]+?@[\w]+\.[\w\.]+[\w])", mtxt)
-    #print(test)
+    print(test)
     
 def simpson():
     f = open(r'C:\Users\gabri\OneDrive\Dokument\GitHub\NetworkProgramming\Project\LaborationTen\tabla.html', "r", encoding="utf-8")
@@ -35,5 +35,5 @@ def simpson():
             """.format(time, season, episode, description))
     f.close()
 
-
+checkEmail()
 simpson()

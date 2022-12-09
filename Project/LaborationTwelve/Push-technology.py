@@ -3,7 +3,7 @@ from firebase_admin import db
 import tkinter as tk
 import tkinter.scrolledtext as tksctxt
 
-cred = firebase_admin.credentials.Certificate('C:\Users\gabri\OneDrive\Dokument\GitHub\NetworkProgramming\Project\LaborationTwelve.json')
+cred = firebase_admin.credentials.Certificate('GabrielKey.json')
 firebase_admin.initialize_app(cred, {'databaseURL':'https://gabrieldatabase-a6d4b-default-rtdb.firebaseio.com/'})
 ref = firebase_admin.db.reference('/')
 
